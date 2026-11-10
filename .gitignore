@@ -1,0 +1,4 @@
+# Apps Script backend (contains the survey questions) — kept out of git on purpose.
+apps-script/*.gs
+
+.DS_Store

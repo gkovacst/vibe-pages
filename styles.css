@@ -1,0 +1,205 @@
+:root {
+  --blue: #005293;
+  --blue-dark: #003a6b;
+  --yellow: #fecb00;
+  --bg: #f4f6f9;
+  --card: #ffffff;
+  --text: #1c2430;
+  --muted: #5b6676;
+  --border: #dde3ea;
+  --error: #c62828;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.hero {
+  /* Darkened so the white text stays readable over the photo. */
+  background:
+    linear-gradient(180deg, rgba(0, 30, 60, 0.55), rgba(0, 30, 60, 0.35) 55%, rgba(0, 30, 60, 0.6)),
+    url("images/stockholm.jpg") center 55% / cover no-repeat,
+    var(--blue-dark);
+  color: #fff;
+  padding: 72px 20px 140px;
+  text-align: center;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+}
+.hero-inner { max-width: 640px; margin: 0 auto; }
+.eyebrow {
+  margin: 0;
+  color: var(--yellow);
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+.hero h1 { margin: 4px 0 12px; font-size: clamp(2.5rem, 8vw, 4rem); letter-spacing: -0.02em; }
+.lead { margin: 0; font-size: 1.15rem; }
+.lead-translation { margin: 10px 0 0; font-size: 0.9rem; opacity: 0.85; font-style: italic; }
+
+.card {
+  max-width: 760px;
+  margin: -80px auto 0;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 40px rgba(0, 30, 60, 0.12);
+  padding: 32px clamp(20px, 5vw, 44px) 40px;
+  position: relative;
+}
+
+h2 { margin-top: 0; }
+.muted { color: var(--muted); }
+
+.banner {
+  background: #fff8db;
+  border: 1px solid var(--yellow);
+  padding: 10px 14px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  font-size: 0.9rem;
+}
+
+label > span { display: block; font-weight: 600; margin-bottom: 6px; }
+#verify-form label { display: block; margin-bottom: 18px; }
+
+input[type="text"], input[type="email"], textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font: inherit;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(0, 82, 147, 0.15);
+}
+textarea { resize: vertical; }
+
+.btn {
+  display: inline-block;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 12px 26px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.05s;
+}
+.btn:hover { background: var(--blue-dark); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: 0.6; cursor: wait; }
+.btn-ghost { background: transparent; color: var(--blue); border: 1.5px solid var(--border); }
+.btn-ghost:hover { background: var(--bg); }
+
+.error { color: var(--error); font-weight: 500; }
+.prank-reveal { color: var(--blue); font-weight: 700; }
+
+.question {
+  border: none;
+  padding: 0;
+  margin: 0 0 32px;
+  border-left: 3px solid transparent;
+  transition: border-color 0.15s, padding 0.15s;
+}
+.question.invalid { border-left-color: var(--error); padding-left: 14px; }
+.question:not([hidden]) { animation: question-in 0.25s ease-out; }
+@keyframes question-in {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .question:not([hidden]) { animation: none; }
+}
+
+.nudge {
+  margin: 14px 0 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #fff8db;
+  border: 1px solid var(--yellow);
+  font-weight: 600;
+  animation: nudge-wobble 0.5s ease-in-out;
+}
+@keyframes nudge-wobble {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-1.5deg); }
+  75% { transform: rotate(1.5deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nudge { animation: none; }
+}
+
+.progress { height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; margin: 8px 0 6px; }
+.progress-fill { height: 100%; width: 0; background: var(--yellow); border-radius: 999px; transition: width 0.25s ease; }
+.progress-text { margin: 0 0 20px; color: var(--muted); font-size: 0.85rem; text-align: right; }
+.question legend { font-weight: 700; font-size: 1.1rem; padding: 0; margin-bottom: 4px; }
+.q-num {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background: var(--yellow);
+  color: var(--blue-dark);
+  font-size: 0.9rem;
+}
+.required { color: var(--error); }
+.hint { margin: 0 0 12px; color: var(--muted); font-size: 0.9rem; }
+
+.options {
+  display: grid;
+  /* min() keeps a single column from overflowing on narrow phones. */
+  grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.15s, background 0.15s;
+}
+.option:hover { border-color: #b4c3d3; }
+.option:has(input:checked) { border-color: var(--blue); background: #eaf2fa; }
+.option.exclusive { border-style: dashed; }
+.option input { accent-color: var(--blue); margin: 0; }
+.option .emoji { font-size: 1.25rem; }
+/* min-width: 0 lets long words wrap instead of pushing the link out of the card. */
+.option-text { flex: 1; min-width: 0; overflow-wrap: break-word; }
+.option-link {
+  flex-shrink: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--blue);
+  text-decoration: none;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #eaf2fa;
+}
+.option-link:hover { background: var(--blue); color: #fff; }
+
+.actions { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+.done { text-align: center; padding: 20px 0; }
+.big-emoji { font-size: 4rem; }
+
+footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 32px 20px; }

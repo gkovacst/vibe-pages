@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Jössz Stockholmba? Mondd el, mit csinálnál szívesen!</title>
+  <meta name="robots" content="noindex" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇸🇪</text></svg>" />
+  <!-- Bump ?v= whenever these files change, so browsers don't keep an old copy. -->
+  <link rel="stylesheet" href="styles.css?v=6" />
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="eyebrow">Välkommen till</p>
+      <h1>Stockholm</h1>
+      <p class="lead" lang="sv">Du kommer och hälsar på oss! Hjälp oss att planera det perfekta programmet genom att svara på några snabba frågor. Vi fixar resten (och fikan). ☕</p>
+      <p class="lead-translation">Nem érted? Semmi baj, a kérdések magyarul vannak. 😉</p>
+    </div>
+  </header>
+
+  <main class="card">
+    <div id="config-banner" class="banner" hidden>
+      Nincs háttérszolgáltatás beállítva: add meg az Apps Script URL-t a <code>config.js</code>-ben.
+    </div>
+
+    <!-- Step 1: verification -->
+    <section id="step-verify">
+      <h2>Először is: ki vagy?</h2>
+      <p class="muted">Azt az email címet add meg, amelyik a vendéglistán szerepel.</p>
+      <form id="verify-form" novalidate>
+        <label>
+          <span>Neved</span>
+          <input type="text" name="name" autocomplete="name" required maxlength="100" />
+        </label>
+        <label>
+          <span>Email címed</span>
+          <input type="email" name="email" autocomplete="email" required />
+        </label>
+        <p id="verify-error" class="error" role="alert" hidden></p>
+        <button type="submit" class="btn">Tovább →</button>
+      </form>
+    </section>
+
+    <!-- Step 2: questions -->
+    <section id="step-survey" hidden>
+      <h2>Hej <span id="greet-name"></span>! 👋</h2>
+      <p id="returning-note" class="muted" hidden>Üdv újra! Betöltöttük a korábbi válaszaidat, így módosíthatod őket.</p>
+      <div class="progress" aria-hidden="true"><div id="progress-fill" class="progress-fill"></div></div>
+      <p id="progress-text" class="progress-text" aria-live="polite"></p>
+      <form id="survey-form" novalidate>
+        <div id="questions"></div>
+        <p id="survey-error" class="error" role="alert" hidden></p>
+        <div class="actions">
+          <button type="button" id="back-btn" class="btn btn-ghost">← Vissza</button>
+          <button type="submit" id="next-btn" class="btn">Tovább →</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Step 3: done -->
+    <section id="step-done" class="done" hidden>
+      <div class="big-emoji">🎉</div>
+      <h2>Tack så mycket!</h2>
+      <p>Elmentettük a válaszaidat. Alig várjuk, hogy találkozzunk Stockholmban!</p>
+      <p class="muted">Meggondoltad magad? Bármikor visszajöhetsz ugyanazzal az email címmel, és módosíthatod a válaszaidat.</p>
+      <button type="button" id="edit-btn" class="btn btn-ghost">Válaszaim szerkesztése</button>
+    </section>
+  </main>
+
+  <footer>Szeretettel Stockholmból ❤️</footer>
+
+  <script src="config.js?v=6"></script>
+  <script src="app.js?v=6"></script>
+</body>
+</html>

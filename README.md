@@ -105,14 +105,21 @@ options, they're stored one per line in a single cell.
 
 `pranks.js` holds the jokes:
 
-- **Floating objects** 2 minutes after the page opens, and **photos** 2 minutes after that.
-  Open the page with `?prank` at the end of the URL to see both within seconds.
+- **Timed queue**, one at a time: camel, Viking ship, mushroom, northern lights, grave candle,
+  "Bálint éppen gépel…", moose sign, mop bucket, snowfall, winter darkness, Bruges belfry, then
+  the photos. The first comes 10 seconds after the page opens; each next one 5–15 seconds after
+  the previous finishes. Photos only start once the visitor's email is verified. Add `?prank`
+  to the URL for 1–2 second gaps when testing.
 - **Runaway button:** on the last question, "Válaszok elküldése" dodges the mouse twice.
 - **Bonus step:** after the last question, "12 / 11 — Biztos vagy benne?" with two "Igen" buttons.
 - **Loading messages** while the answers are being sent.
-- **Option reactions:** Surströmming (with a 💨 cloud) and "Hagyjál már ezzel". They're matched
-  by option text in `REACTIONS`, so update that list if you rename those options in the sheet.
+- **Option reactions** (matched by option text in `REACTIONS`, so update that list if you rename
+  options in the sheet): Surströmming 💨, "Hagyjál már ezzel", Bor / "Naná, hogy pálinka"
+  (Systembolaget age check, once), Räksmörgås 🦐 shower, "Délben se" (page naps), "Pörgősen"
+  (progress bar sprints). Pálinka options also wobble on hover.
+- **Tab title** changes to "Hé, gyere vissza! 🇸🇪" while the visitor is on another tab.
 - **Swedish Chef mode:** click the "Stockholm" title 5 times quickly.
+- **ABBA disco:** type "abba" anywhere.
 
 The photos aren't in the repo. Put low-res JPEG/PNG/GIF/WebP files (under 500 KB each) in a
 Drive folder named **Pranks** in the same folder as the spreadsheet. The Apps Script sends

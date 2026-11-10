@@ -130,6 +130,7 @@
             a.title = "Részletek új lapon";
             label.append(a);
           }
+          if (window.Pranks) window.Pranks.decorateOption(label, opt.value);
           grid.append(label);
         });
         fieldset.append(grid);

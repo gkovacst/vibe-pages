@@ -12,6 +12,8 @@
 }
 
 * { box-sizing: border-box; }
+/* Elements with display rules (e.g. .actions) must still disappear when hidden. */
+[hidden] { display: none !important; }
 
 body {
   margin: 0;
@@ -203,3 +205,93 @@ textarea { resize: vertical; }
 .big-emoji { font-size: 4rem; }
 
 footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 32px 20px; }
+
+/* ---------- Pranks (see pranks.js) ---------- */
+.floater {
+  position: fixed;
+  left: 0;
+  z-index: 50;
+  pointer-events: none; /* never blocks the form */
+  animation: float-ltr linear both;
+}
+.floater.rtl { animation-name: float-rtl; }
+@keyframes float-ltr {
+  from { transform: translateX(-280px); }
+  to { transform: translateX(calc(100vw + 40px)); }
+}
+@keyframes float-rtl {
+  from { transform: translateX(calc(100vw + 40px)); }
+  to { transform: translateX(-280px); }
+}
+.floater-bob {
+  animation: bob 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 8px 10px rgba(0, 30, 60, 0.25));
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-20px) rotate(5deg); }
+}
+.floater-emoji { font-size: 64px; line-height: 1; }
+
+.camel { display: flex; align-items: center; gap: 2px; }
+.camel-rider { transform: scaleX(-1); } /* the emoji faces left; make it face where it's going */
+.camel-banner {
+  background: var(--yellow);
+  color: var(--blue-dark);
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 3px 12px 12px 3px;
+  white-space: nowrap;
+}
+
+.flame {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: flicker 0.9s ease-in-out infinite alternate;
+}
+@keyframes flicker {
+  from { transform: scale(1, 1) rotate(-2deg); }
+  to { transform: scale(0.92, 1.08) rotate(2deg); }
+}
+
+.polaroid {
+  background: #fff;
+  padding: 8px 8px 24px;
+  border-radius: 2px;
+  transform: rotate(var(--tilt, 0deg));
+}
+.polaroid img { display: block; width: 160px; height: auto; max-height: 200px; object-fit: cover; }
+
+.runaway { transition: background 0.15s, transform 0.18s ease-out; }
+
+.reaction {
+  margin: 14px 0 0;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: #eaf2fa;
+  border: 1px solid #b4cde6;
+  font-weight: 600;
+  animation: question-in 0.25s ease-out;
+}
+
+.puff {
+  position: fixed;
+  z-index: 60;
+  font-size: 28px;
+  pointer-events: none;
+  animation: puff-up 1.6s ease-out both;
+}
+@keyframes puff-up {
+  from { opacity: 1; transform: translateY(0) scale(0.6); }
+  to { opacity: 0; transform: translateY(-130px) scale(1.7); }
+}
+
+.bonus { text-align: center; padding: 28px 0 8px; }
+.bonus-title { font-size: 1.6rem; font-weight: 800; margin: 0 0 22px; }
+.bonus-actions { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.bonus-actions .btn { min-width: 120px; }
+.loading-text { margin: 20px 0 0; color: var(--muted); font-style: italic; }
+
+.hero h1 { user-select: none; } /* the title is clicked repeatedly for Swedish Chef mode */

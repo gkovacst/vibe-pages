@@ -15,6 +15,7 @@ stockholm-survey/
 ├── index.html          page structure (verify → questions → thank-you)
 ├── styles.css
 ├── app.js              rendering, validation, API calls
+├── pranks.js           floating objects and photos
 ├── config.js           ← paste the Apps Script URL here
 ├── images/stockholm.jpg header photo (public domain / CC0, from Wikimedia Commons)
 └── apps-script/Code.gs backend: copy into the Google Sheet's Apps Script editor
@@ -99,6 +100,24 @@ Rows with no `id`, no `title` or an unknown `type` are skipped, so you can clear
 a question temporarily. A new id gets a new column in **Responses**. If you rename an id, new
 answers go into a new column and the old answers stay in the old one. When someone picks several
 options, they're stored one per line in a single cell.
+
+## Pranks
+
+`pranks.js` holds the jokes:
+
+- **Floating objects** 2 minutes after the page opens, and **photos** 2 minutes after that.
+  Open the page with `?prank` at the end of the URL to see both within seconds.
+- **Runaway button:** on the last question, "Válaszok elküldése" dodges the mouse twice.
+- **Bonus step:** after the last question, "12 / 11 — Biztos vagy benne?" with two "Igen" buttons.
+- **Loading messages** while the answers are being sent.
+- **Option reactions:** Surströmming (with a 💨 cloud) and "Hagyjál már ezzel". They're matched
+  by option text in `REACTIONS`, so update that list if you rename those options in the sheet.
+- **Swedish Chef mode:** click the "Stockholm" title 5 times quickly.
+
+The photos aren't in the repo. Put low-res JPEG/PNG/GIF/WebP files (under 500 KB each) in a
+Drive folder named **Pranks** in the same folder as the spreadsheet. The Apps Script sends
+them only to verified visitors. Run **`checkPrankPhotos`** in the editor once to grant Drive
+access and to see which files will be used.
 
 ## Notes
 

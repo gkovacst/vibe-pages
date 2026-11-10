@@ -9,6 +9,8 @@
   const steps = { verify: $("step-verify"), survey: $("step-survey"), done: $("step-done") };
   let user = null; // { name, email }
   let current = 0; // index of the question being shown
+  let onBonus = false; // showing the "Biztos vagy benne?" step after the last question
+  let sending = false;
   // "Changing your mind" tracking for the indecision nudge, per question id.
   const NUDGE_AFTER = 3;
   let mindChanges = {};
@@ -177,15 +179,31 @@
 
   function goTo(index) {
     current = Math.max(0, Math.min(index, questions.length - 1));
+    onBonus = false;
+    $("bonus").hidden = true;
+    $("survey-actions").hidden = false;
     [...$("questions").children].forEach((fs, i) => (fs.hidden = i !== current));
     const last = current === questions.length - 1;
     $("next-btn").textContent = last ? "Válaszok elküldése" : "Tovább →";
+    if (window.Pranks) window.Pranks.setRunaway($("next-btn"), last);
     $("progress-text").textContent = `${current + 1} / ${questions.length}`;
     $("progress-fill").style.width = `${((current + 1) / questions.length) * 100}%`;
     showError($("survey-error"), "");
     // Bring the question back into view if the user had scrolled down.
     const top = steps.survey.getBoundingClientRect().top;
     if (top < 0) window.scrollTo({ top: window.scrollY + top - 24, behavior: "smooth" });
+  }
+
+  // Prank: one more "question" (12 / 11) whose two buttons both say yes and both send.
+  function showBonus() {
+    onBonus = true;
+    [...$("questions").children].forEach((fs) => (fs.hidden = true));
+    $("survey-actions").hidden = true;
+    $("bonus").hidden = false;
+    $("progress-text").textContent = `${questions.length + 1} / ${questions.length}`;
+    $("progress-fill").style.width = "100%";
+    showError($("survey-error"), "");
+    if (window.Pranks) window.Pranks.setRunaway($("next-btn"), false);
   }
 
   // Returns true if the question is answered (or optional); otherwise shows why not.
@@ -274,6 +292,13 @@
       }
       user = { name, email };
       questions = res.questions;
+      // Prank photos come from the backend too, so they're only available once verified.
+      if (window.Pranks) {
+        window.Pranks.setPhotoLoader(async () => {
+          const r = await api({ action: "photos", ...user });
+          return r.ok && Array.isArray(r.photos) ? r.photos : [];
+        });
+      }
       $("greet-name").textContent = name.split(" ")[0];
       renderQuestions();
       $("returning-note").hidden = !res.previous;
@@ -293,29 +318,32 @@
 
   $("survey-form").addEventListener("submit", async (e) => {
     e.preventDefault();
-    const form = e.target;
+    if (sending) return;
     const errorEl = $("survey-error");
 
-    if (!validate(current)) return;
-    if (current < questions.length - 1) return goTo(current + 1);
-
-    // Last question: every answer is checked once more before sending.
-    const answers = {};
-    let firstMissing = -1;
-    questions.forEach((q, i) => {
-      const { value, missing } = readAnswer(q);
-      answers[q.id] = value;
-      if (missing && firstMissing === -1) firstMissing = i;
-    });
-    if (firstMissing !== -1) {
-      goTo(firstMissing);
-      validate(firstMissing);
-      return;
+    if (!onBonus) {
+      if (!validate(current)) return;
+      if (current < questions.length - 1) return goTo(current + 1);
+      // Last question: every answer is checked once more before the bonus step.
+      const firstMissing = questions.findIndex((q) => readAnswer(q).missing);
+      if (firstMissing !== -1) {
+        goTo(firstMissing);
+        validate(firstMissing);
+        return;
+      }
+      return showBonus();
     }
 
-    setBusy(form, true, "Küldés…");
+    // On the bonus step: whichever "Igen" was clicked, send.
+    const answers = {};
+    questions.forEach((q) => (answers[q.id] = readAnswer(q).value));
+    const buttons = [...$("bonus").querySelectorAll("button")];
+    showError(errorEl, "");
+    sending = true;
+    buttons.forEach((b) => (b.disabled = true));
     try {
-      const res = await api({ action: "submit", ...user, answers });
+      const request = api({ action: "submit", ...user, answers });
+      const res = window.Pranks ? await window.Pranks.withLoadingMessages($("loading-text"), request) : await request;
       if (!res.ok) {
         showError(errorEl, res.error === "not_whitelisted" ? "Az email címed nincs a vendéglistán." : res.error || "Valami hiba történt.");
         return;
@@ -325,7 +353,8 @@
       console.error(err);
       showError(errorEl, "Nem sikerült elmenteni a válaszaidat. Kérlek, próbáld újra.");
     } finally {
-      setBusy(form, false);
+      sending = false;
+      buttons.forEach((b) => (b.disabled = false));
     }
   });
 
@@ -368,6 +397,9 @@
       nudging = mindChanges[id] >= NUDGE_AFTER;
       nudge.hidden = !nudging;
     }
+
+    // Prank reactions to specific options (e.g. Surströmming).
+    if (input.checked && window.Pranks) window.Pranks.onOptionChecked(input);
 
     // Single-choice questions move on by themselves after a short pause
     // (unless we're busy teasing the user about their indecision).

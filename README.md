@@ -120,6 +120,7 @@ options, they're stored one per line in a single cell.
 - **Freemail jokes** on the email step: a fake "not supported" error for Bálint, and if this
   browser has already been used with a gmail address, freemail addresses are blocked with
   "Balázs, ne próbáld meg mások válaszait megnézni!" (remembered in the browser's localStorage).
+  A "Nem, tényleg Bálint vagyok" button under it continues like Tovább.
 - **Tab title** changes to "Hé, gyere vissza! 🇸🇪" while the visitor is on another tab.
 - **Swedish Chef mode:** click the "Stockholm" title 5 times quickly.
 - **ABBA disco:** type "abba" anywhere.

@@ -109,6 +109,7 @@ textarea { resize: vertical; }
 
 .error { color: var(--error); font-weight: 500; }
 .prank-reveal { color: var(--blue); font-weight: 700; }
+.peek-override { display: block; margin-top: 10px; }
 
 .question {
   border: none;

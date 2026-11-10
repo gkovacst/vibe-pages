@@ -245,6 +245,29 @@
     }
   }
 
+  // Clicking "Nem, tényleg Bálint vagyok" turns the guard off for this visit and continues
+  // exactly as the Tovább button would.
+  let peekOverridden = false;
+  const peekBlocked = () => !peekOverridden && gmailSeen();
+
+  function showPeekError(errorEl) {
+    const form = $("verify-form");
+    const submit = form.querySelector('button[type="submit"]');
+    submit.disabled = true;
+    showError(errorEl, PEEK_MESSAGE);
+    const really = document.createElement("button");
+    really.type = "button";
+    really.className = "btn btn-small peek-override";
+    really.textContent = "Nem, tényleg Bálint vagyok";
+    really.addEventListener("click", () => {
+      peekOverridden = true;
+      submit.disabled = false;
+      showError(errorEl, "");
+      form.requestSubmit();
+    });
+    errorEl.append(really);
+  }
+
   // ---------- Prank: freemail.hu addresses ----------
   // A freemail address first gets a fake "not supported" error with the button disabled.
   // Two seconds later the joke is revealed and the button works again. It only plays once.
@@ -259,12 +282,11 @@
     const isFreemail = FREEMAIL.test(e.target.value.trim());
 
     // The peeking guard wins over the Bálint joke.
-    if (isFreemail && gmailSeen()) {
+    if (isFreemail && peekBlocked()) {
       clearTimeout(prankTimer);
       prankTimer = null;
       prankShown = true; // so editing the address away clears the message below
-      btn.disabled = true;
-      showError(errorEl, PEEK_MESSAGE);
+      showPeekError(errorEl);
       return;
     }
 
@@ -302,7 +324,7 @@
     if (!name) return showError(errorEl, "Kérlek, add meg a neved.");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError(errorEl, "Kérlek, adj meg egy érvényes email címet.");
     // Also checked here in case the address was autofilled without an input event.
-    if (FREEMAIL.test(email) && gmailSeen()) return showError(errorEl, PEEK_MESSAGE);
+    if (FREEMAIL.test(email) && peekBlocked()) return showPeekError(errorEl);
     showError(errorEl, "");
 
     setBusy(form, true, "Ellenőrzés…");

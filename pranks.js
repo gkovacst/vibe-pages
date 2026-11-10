@@ -1,7 +1,7 @@
 // Pranks:
 // - a queue of timed surprises (floating objects, Viking ship, northern lights, moose,
-//   snow, "Bálint is typing", winter darkness, then photos), one at a time: the first after
-//   10 seconds, each next one 5–15 seconds after the previous has finished
+//   snow, "Bálint is typing", winter darkness, with the photos mixed in), one at a time:
+//   the first after 10 seconds, each next one 3–8 seconds after the previous has finished
 //   (add ?prank to the URL for much shorter waits, for testing);
 // - the send button runs away from the mouse twice on the last question;
 // - reactions to specific options (Surströmming, "Hagyjál már ezzel", wine/pálinka,
@@ -15,8 +15,8 @@ window.Pranks = (function () {
 
   const fast = new URLSearchParams(location.search).has("prank");
   const FIRST_AFTER_MS = fast ? 1000 : 10 * 1000;
-  const GAP_MIN_MS = fast ? 1000 : 5 * 1000;
-  const GAP_MAX_MS = fast ? 2000 : 15 * 1000;
+  const GAP_MIN_MS = fast ? 1000 : 3 * 1000;
+  const GAP_MAX_MS = fast ? 2000 : 8 * 1000;
 
   // Mécses (All Saints' Day grave candle).
   const CANDLE = `<svg viewBox="0 0 60 96" width="54" height="86" aria-hidden="true">
@@ -295,25 +295,38 @@ window.Pranks = (function () {
       () => floatAcross(svg(BELFRY)),
     ];
 
+    // Photos are fetched in the background as soon as the visitor is verified, then mixed in
+    // among the other items. `photos` stays null until then.
+    let photos = null;
+    const photosReady = photoLoader
+      .then((load) => load())
+      .then(
+        (list) => (photos = list),
+        (err) => {
+          console.warn("Prank photos could not be loaded.", err);
+          photos = [];
+        }
+      );
+
     await sleep(FIRST_AFTER_MS);
-    for (const item of items) {
+    while (items.length || photos === null || photos.length) {
+      const photosLeft = photos ? photos.length : 0;
+      let next;
+      // Picking in proportion to what's left spreads the photos evenly through the queue.
+      if (photosLeft && Math.random() < photosLeft / (photosLeft + items.length)) {
+        const src = photos.shift();
+        next = () => floatAcross(polaroid(src));
+      } else if (items.length) {
+        next = items.shift();
+      } else {
+        await photosReady; // only photos remain, but the visitor isn't verified yet
+        continue;
+      }
       try {
-        await item();
+        await next();
       } catch (err) {
         console.warn("A prank failed; moving on.", err);
       }
-      await gap();
-    }
-
-    const loadPhotos = await photoLoader; // waits here until the visitor is verified
-    let photos = [];
-    try {
-      photos = await loadPhotos();
-    } catch (err) {
-      console.warn("Prank photos could not be loaded.", err);
-    }
-    for (const src of photos) {
-      await floatAcross(polaroid(src));
       await gap();
     }
   }

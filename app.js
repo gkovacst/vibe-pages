@@ -221,6 +221,30 @@
 
   // ---------- Events ----------
 
+  // ---------- Peeking guard: gmail first, then freemail, in the same browser ----------
+  // Remembers (in this browser) that someone got in with a gmail address. A freemail
+  // address tried afterwards is blocked as an attempt to look at someone else's answers.
+  const GMAIL = /@(gmail|googlemail)\.com$/i;
+  const GMAIL_SEEN_KEY = "stockholm-survey:gmail-verified";
+  const PEEK_MESSAGE = "Balázs, ne próbáld meg mások válaszait megnézni!";
+
+  function gmailSeen() {
+    try {
+      return localStorage.getItem(GMAIL_SEEN_KEY) === "1";
+    } catch (err) {
+      return false; // storage can be unavailable (e.g. some private modes)
+    }
+  }
+
+  function rememberGmail(email) {
+    if (!GMAIL.test(email)) return;
+    try {
+      localStorage.setItem(GMAIL_SEEN_KEY, "1");
+    } catch (err) {
+      // Not critical; the guard just won't trigger.
+    }
+  }
+
   // ---------- Prank: freemail.hu addresses ----------
   // A freemail address first gets a fake "not supported" error with the button disabled.
   // Two seconds later the joke is revealed and the button works again. It only plays once.
@@ -233,6 +257,16 @@
     const btn = $("verify-form").querySelector('button[type="submit"]');
     const errorEl = $("verify-error");
     const isFreemail = FREEMAIL.test(e.target.value.trim());
+
+    // The peeking guard wins over the Bálint joke.
+    if (isFreemail && gmailSeen()) {
+      clearTimeout(prankTimer);
+      prankTimer = null;
+      prankShown = true; // so editing the address away clears the message below
+      btn.disabled = true;
+      showError(errorEl, PEEK_MESSAGE);
+      return;
+    }
 
     if (isFreemail && !prankTimer && !prankDone) {
       btn.disabled = true;
@@ -267,6 +301,8 @@
 
     if (!name) return showError(errorEl, "Kérlek, add meg a neved.");
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return showError(errorEl, "Kérlek, adj meg egy érvényes email címet.");
+    // Also checked here in case the address was autofilled without an input event.
+    if (FREEMAIL.test(email) && gmailSeen()) return showError(errorEl, PEEK_MESSAGE);
     showError(errorEl, "");
 
     setBusy(form, true, "Ellenőrzés…");
@@ -292,6 +328,7 @@
         return;
       }
       user = { name, email };
+      rememberGmail(email);
       questions = res.questions;
       // Prank photos come from the backend too, so they're only available once verified.
       if (window.Pranks) {

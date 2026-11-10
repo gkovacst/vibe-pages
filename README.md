@@ -106,10 +106,10 @@ options, they're stored one per line in a single cell.
 `pranks.js` holds the jokes:
 
 - **Timed queue**, one at a time: camel, Viking ship, mushroom, northern lights, grave candle,
-  "Bálint éppen gépel…", moose sign, mop bucket, snowfall, winter darkness, Bruges belfry, then
-  the photos. The first comes 10 seconds after the page opens; each next one 5–15 seconds after
-  the previous finishes. Photos only start once the visitor's email is verified. Add `?prank`
-  to the URL for 1–2 second gaps when testing.
+  "Bálint éppen gépel…", moose sign, mop bucket, snowfall, winter darkness and Bruges belfry,
+  with the photos mixed in at random once the visitor's email is verified. The first comes
+  10 seconds after the page opens; each next one 3–8 seconds after the previous finishes.
+  Add `?prank` to the URL for 1–2 second gaps when testing.
 - **Runaway button:** on the last question, "Válaszok elküldése" dodges the mouse twice.
 - **Bonus step:** after the last question, "12 / 11 — Biztos vagy benne?" with two "Igen" buttons.
 - **Loading messages** while the answers are being sent.
@@ -117,6 +117,9 @@ options, they're stored one per line in a single cell.
   options in the sheet): Surströmming 💨, "Hagyjál már ezzel", Bor / "Naná, hogy pálinka"
   (Systembolaget age check, once), Räksmörgås 🦐 shower, "Délben se" (page naps), "Pörgősen"
   (progress bar sprints). Pálinka options also wobble on hover.
+- **Freemail jokes** on the email step: a fake "not supported" error for Bálint, and if this
+  browser has already been used with a gmail address, freemail addresses are blocked with
+  "Balázs, ne próbáld meg mások válaszait megnézni!" (remembered in the browser's localStorage).
 - **Tab title** changes to "Hé, gyere vissza! 🇸🇪" while the visitor is on another tab.
 - **Swedish Chef mode:** click the "Stockholm" title 5 times quickly.
 - **ABBA disco:** type "abba" anywhere.
